@@ -53,3 +53,26 @@ export async function getTenantAssessments(tenantId, params = {}) {
   const data = unwrapApiData(response);
   return Array.isArray(data) ? data.map(normalizeAssessment) : [];
 }
+
+export async function generateAssessmentReport(assessmentId) {
+  const response = await api.post(`/assessments/${assessmentId}/generate-report`);
+  return unwrapApiData(response);
+}
+
+export async function getAssessmentReport(assessmentId) {
+  const response = await api.get(`/assessments/${assessmentId}/report`);
+  return unwrapApiData(response);
+}
+
+export function getAssessmentReportDownloadUrl(assessmentId, reportType = "pdf") {
+  const baseURL = api.defaults.baseURL?.replace(/\/+$/, "") || "";
+  return `${baseURL}/assessments/${assessmentId}/report/download?report_type=${reportType}`;
+}
+
+export async function downloadAssessmentReport(assessmentId, reportType = "pdf") {
+  const response = await api.get(`/assessments/${assessmentId}/report/download`, {
+    params: { report_type: reportType },
+    responseType: "blob",
+  });
+  return response.data;
+}

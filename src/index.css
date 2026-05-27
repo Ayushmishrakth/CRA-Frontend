@@ -540,6 +540,91 @@ a {
   text-transform: inherit;
 }
 
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.parameter-tools {
+  flex-wrap: wrap;
+}
+
+.search-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 360px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 0.65rem;
+  color: var(--muted);
+}
+
+.search-field input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  padding-left: 0;
+}
+
+.parameters-table td {
+  min-width: 120px;
+}
+
+.parameters-table td:first-child {
+  min-width: 44px;
+  width: 44px;
+}
+
+.parameters-table .muted-text {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.parameter-output {
+  min-width: 280px;
+  max-width: 420px;
+  color: var(--muted);
+}
+
+.parameter-details-row td {
+  background: rgba(17, 24, 39, 0.48);
+}
+
+.parameter-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.parameter-detail-block {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 8px;
+  background: rgba(15, 20, 25, 0.58);
+  padding: 0.85rem;
+}
+
+.parameter-detail-block h3 {
+  margin: 0 0 0.35rem;
+  color: var(--text);
+  font-size: 0.88rem;
+}
+
+.parameter-detail-block p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .truncate-cell {
   max-width: 240px;
   white-space: nowrap;
@@ -722,6 +807,53 @@ a {
   overflow-wrap: anywhere;
 }
 
+.runtime-event code {
+  display: block;
+  max-height: 96px;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: #cbd5e1;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.report-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.report-actions,
+.download-actions,
+.report-inline-actions,
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.report-actions {
+  justify-content: flex-end;
+}
+
+.download-actions {
+  margin-top: 1rem;
+}
+
+.back-link {
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.disabled-link {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.report-summary-list {
+  margin-top: 1rem;
+}
+
 .runtime-event time {
   color: var(--muted);
   font-size: 0.78rem;
@@ -890,7 +1022,8 @@ a {
   .collector-grid,
   .recommendations-grid,
   .execution-summary,
-  .runtime-grid {
+  .runtime-grid,
+  .report-chart-grid {
     grid-template-columns: 1fr;
   }
 
@@ -902,6 +1035,12 @@ a {
 
   .table-tools input {
     min-width: 0;
+  }
+
+  .search-field,
+  .parameter-detail-grid {
+    min-width: 0;
+    grid-template-columns: 1fr;
   }
 
   .progress {

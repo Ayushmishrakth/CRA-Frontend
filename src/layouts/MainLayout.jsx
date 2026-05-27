@@ -14,6 +14,7 @@ export default function MainLayout() {
         <nav className="main-nav">
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink to="/assessments">Assessments</NavLink>
+          <NavLink to="/parameters">Parameters</NavLink>
         </nav>
         {user && (
           <div className="header-actions">

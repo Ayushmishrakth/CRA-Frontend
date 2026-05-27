@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useMsal } from "@azure/msal-react";
 import { loginWithMicrosoftPopup, logoutMicrosoft } from "../auth/msalAuth";
 import { clearAllAuthCaches } from "../auth/msalCache";
@@ -27,32 +27,45 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const bootstrapPromiseRef = useRef(null);
 
   const isAuthenticated = Boolean(tokenStorage.hasAccessToken() && user);
 
   const bootstrap = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      if (tokenStorage.hasAccessToken()) {
-        console.info("[CRA] Restoring session from stored CRA JWT");
-        const profile = await withTimeout(
-          loadCurrentUser(),
-          "Session restore timed out. Please sign in again."
-        );
-        setUser(profile);
-        console.info("[CRA] Session restored:", profile.email);
-      } else {
-        setUser(null);
-      }
-    } catch (err) {
-      console.warn("[CRA] Session restore failed", err);
-      tokenStorage.clear();
-      setUser(null);
-      setError(err.message || "Session restore failed. Please sign in again.");
-    } finally {
-      setLoading(false);
+    if (bootstrapPromiseRef.current) {
+      return bootstrapPromiseRef.current;
     }
+
+    const promise = (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        if (tokenStorage.hasAccessToken()) {
+          console.info("[CRA] Restoring session from stored CRA JWT");
+          const profile = await withTimeout(
+            loadCurrentUser(),
+            "Session restore timed out. Please sign in again."
+          );
+          setUser(profile);
+          console.info("[CRA] Session restored:", profile.email);
+        } else {
+          setUser(null);
+        }
+        return null;
+      } catch (err) {
+        console.warn("[CRA] Session restore failed", err);
+        tokenStorage.clear();
+        setUser(null);
+        setError(err.message || "Session restore failed. Please sign in again.");
+        return null;
+      } finally {
+        bootstrapPromiseRef.current = null;
+        setLoading(false);
+      }
+    })();
+
+    bootstrapPromiseRef.current = promise;
+    return promise;
   }, []);
 
   useEffect(() => {

@@ -15,7 +15,7 @@ import {
 } from "../utils/assessmentFormatters";
 
 export default function DashboardPage() {
-  const { user, refreshUser } = useAuth();
+  const { user } = useAuth();
   const {
     assessments,
     loading: assessmentLoading,
@@ -29,12 +29,11 @@ export default function DashboardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    refreshUser();
     api
       .get("/health")
       .then((res) => setHealth(res.data))
       .catch((e) => setApiError(e.response?.data?.detail || e.message));
-  }, [refreshUser]);
+  }, []);
 
   useEffect(() => {
     if (user?.microsoft_tid) {

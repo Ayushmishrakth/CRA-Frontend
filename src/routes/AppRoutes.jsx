@@ -2,8 +2,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../layouts/MainLayout";
 import AssessmentDetailPage from "../pages/AssessmentDetailPage";
+import AssessmentReportPage from "../pages/AssessmentReportPage";
 import AssessmentsPage from "../pages/AssessmentsPage";
 import LoginPage from "../pages/LoginPage";
+import ParametersPage from "../pages/ParametersPage";
 import DashboardPage from "../pages/DashboardPage";
 
 export default function AppRoutes() {
@@ -20,7 +22,9 @@ export default function AppRoutes() {
         >
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/assessments" element={<AssessmentsPage />} />
+          <Route path="/parameters" element={<ParametersPage />} />
           <Route path="/assessments/:assessmentId" element={<AssessmentDetailPage />} />
+          <Route path="/assessments/:assessmentId/report" element={<AssessmentReportPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

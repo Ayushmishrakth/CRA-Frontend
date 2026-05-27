@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AssessmentProgress from "../components/assessment/AssessmentProgress";
 import AssessmentStatusBadge from "../components/assessment/AssessmentStatusBadge";
 import AssessmentTimeline from "../components/assessment/AssessmentTimeline";
@@ -69,6 +69,12 @@ export default function AssessmentDetailPage() {
           </div>
         </div>
         <AssessmentProgress value={progress} />
+      </div>
+
+      <div className="report-inline-actions">
+        <Link className="primary-action" to={`/assessments/${assessmentId}/report`}>
+          Enterprise Report
+        </Link>
       </div>
 
       {error && <div className="error-banner">{error}</div>}

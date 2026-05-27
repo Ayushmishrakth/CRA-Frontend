@@ -13,8 +13,11 @@ import { formatDateTime } from "../../utils/assessmentFormatters";
 const EVENT_ICON = {
   "assessment.started": ServerCog,
   "collector.started": DatabaseZap,
+  "collector.stdout": TerminalSquare,
+  "collector.warning": Activity,
   "collector.completed": CheckCircle2,
   "collector.failed": XCircle,
+  "collector.timeout": Clock3,
   "finding.generated": Activity,
   "scoring.completed": CheckCircle2,
   "recommendation.generated": TerminalSquare,
@@ -33,7 +36,13 @@ export default function AssessmentExecutionPanel({
 }) {
   const collectorEvents = events.filter((event) => event.type?.startsWith("collector."));
   const liveEvents = events.slice(0, 14);
-  const retryEvents = events.filter((event) => event.payload?.retry || event.payload?.throttled);
+  const retryEvents = events.filter(
+    (event) => event.payload?.retry || event.payload?.throttled || event.payload?.retries > 0
+  );
+  const timeoutEvents = events.filter((event) => event.type === "collector.timeout");
+  const stdoutEvents = events.filter((event) => event.type === "collector.stdout");
+  const failureEvents = events.filter((event) => event.type === "collector.failed");
+  const metadata = job?.metadata ?? {};
 
   return (
     <section className="panel execution-panel">
@@ -60,7 +69,23 @@ export default function AssessmentExecutionPanel({
         </article>
         <article>
           <span>Runtime</span>
-          <strong>{job?.metadata?.runtime ?? "phase7a"}</strong>
+          <strong>{metadata.runtime ?? "phase7b_powershell"}</strong>
+        </article>
+        <article>
+          <span>Collector failures</span>
+          <strong>{metadata.collector_failures ?? failureEvents.length}</strong>
+        </article>
+        <article>
+          <span>Timeouts</span>
+          <strong>{metadata.collector_timeouts ?? timeoutEvents.length}</strong>
+        </article>
+        <article>
+          <span>Retries</span>
+          <strong>{metadata.collector_retries ?? retryEvents.length}</strong>
+        </article>
+        <article>
+          <span>PS duration</span>
+          <strong>{metadata.collector_duration_ms ? `${metadata.collector_duration_ms}ms` : "-"}</strong>
         </article>
       </div>
 
@@ -82,7 +107,11 @@ export default function AssessmentExecutionPanel({
                 <Icon size={16} />
                 <div>
                   <strong>{event.payload?.collector ?? event.payload?.parameter_key ?? eventLabel(event.type)}</strong>
-                  <span>{eventLabel(event.type)}</span>
+                  <span>
+                    {eventLabel(event.type)}
+                    {event.payload?.duration_ms ? ` · ${event.payload.duration_ms}ms` : ""}
+                    {event.payload?.exit_code != null ? ` · exit ${event.payload.exit_code}` : ""}
+                  </span>
                 </div>
                 <time>{formatDateTime(event.timestamp)}</time>
               </article>
@@ -101,13 +130,36 @@ export default function AssessmentExecutionPanel({
               <RotateCw size={16} />
               <div>
                 <strong>{event.payload?.parameter_key ?? eventLabel(event.type)}</strong>
-                <span>{event.payload?.retry ? "Retry scheduled" : "Throttle handled"}</span>
+                <span>
+                  {event.payload?.retry ? "Retry scheduled" : "Retry telemetry"}
+                  {event.payload?.retries ? ` · ${event.payload.retries} retries` : ""}
+                  {event.payload?.attempts ? ` · ${event.payload.attempts} attempts` : ""}
+                </span>
               </div>
               <time>{formatDateTime(event.timestamp)}</time>
             </article>
           ))}
         </div>
       </div>
+
+      {stdoutEvents.length > 0 && (
+        <div className="runtime-column runtime-log">
+          <div className="runtime-column-title">
+            <TerminalSquare size={16} />
+            <span>PowerShell stdout</span>
+          </div>
+          {stdoutEvents.slice(0, 5).map((event) => (
+            <article className="runtime-event stdout-event" key={event.id}>
+              <TerminalSquare size={16} />
+              <div>
+                <strong>{event.payload?.parameter_key ?? event.payload?.collector ?? "collector.stdout"}</strong>
+                <code>{event.payload?.stdout_preview ?? "-"}</code>
+              </div>
+              <time>{formatDateTime(event.timestamp)}</time>
+            </article>
+          ))}
+        </div>
+      )}
 
       <div className="runtime-column runtime-log">
         <div className="runtime-column-title">

@@ -7,6 +7,7 @@ import AssessmentsPage from "../pages/AssessmentsPage";
 import LoginPage from "../pages/LoginPage";
 import ParametersPage from "../pages/ParametersPage";
 import DashboardPage from "../pages/DashboardPage";
+import TenantConnectionPage from "../pages/TenantConnectionPage";
 
 export default function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AppRoutes() {
           }
         >
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/tenant" element={<TenantConnectionPage />} />
           <Route path="/assessments" element={<AssessmentsPage />} />
           <Route path="/parameters" element={<ParametersPage />} />
           <Route path="/assessments/:assessmentId" element={<AssessmentDetailPage />} />

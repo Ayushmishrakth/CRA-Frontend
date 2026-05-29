@@ -1,6 +1,12 @@
-# CRA Frontend — Microsoft Auth Test App
+# CRA Frontend
 
 React + MSAL React client for the CRA FastAPI backend.
+
+## Requirements
+
+- Node.js 20+
+- npm
+- Running CRA backend from `../CRA-Tool`
 
 ## Why two tokens?
 
@@ -14,7 +20,7 @@ MSAL handles Microsoft login in the browser. The backend never sees Microsoft pa
 ## Install & run
 
 ```bash
-cd cra-frontend
+cd CRA-frontend
 npm install
 cp .env.example .env
 npm run dev
@@ -25,10 +31,54 @@ Open http://localhost:3000
 **Backend must be running:**
 
 ```bash
-cd ..
+cd ../CRA-Tool
 source venv/bin/activate
 uvicorn app.main:app --reload
 ```
+
+On Windows PowerShell:
+
+```powershell
+cd ..\CRA-Tool
+.\venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload
+```
+
+## Transfer to a New Laptop
+
+Copy or push the source code and lock file:
+
+```text
+src/
+.env.example
+.gitignore
+index.html
+package.json
+package-lock.json
+README.md
+TROUBLESHOOTING.md
+vite.config.js
+```
+
+Do not copy generated/local files:
+
+```text
+node_modules/
+dist/
+.env
+*.log
+```
+
+On the new laptop:
+
+```bash
+cd CRA-frontend
+npm ci
+cp .env.example .env
+npm run dev
+```
+
+Update `.env` with the new backend URL or Microsoft app registration values when they differ from the old laptop.
 
 ## Azure App Registration
 

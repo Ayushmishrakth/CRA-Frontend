@@ -3,7 +3,7 @@
  */
 
 import { BrowserAuthError, InteractionRequiredAuthError } from "@azure/msal-browser";
-import { loginRequest, logoutRequest, tokenRequest } from "./msalConfig";
+import { loginRequest, logoutRequest, tenantDeploymentRequest, tokenRequest } from "./msalConfig";
 import { clearAllAuthCaches } from "./msalCache";
 
 export function mapMsalError(error) {
@@ -101,5 +101,29 @@ export async function logoutMicrosoft(msalInstance) {
     });
   } finally {
     await clearAllAuthCaches(msalInstance);
+  }
+}
+
+export async function acquireTenantDeploymentToken(msalInstance) {
+  const account = msalInstance.getActiveAccount() || msalInstance.getAllAccounts()[0];
+  if (!account) {
+    throw new Error("Microsoft session is not active. Sign in again.");
+  }
+  try {
+    const silent = await msalInstance.acquireTokenSilent({
+      ...tenantDeploymentRequest,
+      account,
+    });
+    return silent.accessToken;
+  } catch (error) {
+    if (!(error instanceof InteractionRequiredAuthError)) {
+      throw new Error(mapMsalError(error));
+    }
+    const popup = await msalInstance.acquireTokenPopup({
+      ...tenantDeploymentRequest,
+      account,
+      prompt: "consent",
+    });
+    return popup.accessToken;
   }
 }

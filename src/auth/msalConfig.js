@@ -37,6 +37,15 @@ export const tokenRequest = {
   scopes: loginRequest.scopes,
 };
 
+export const tenantDeploymentRequest = {
+  scopes: [
+    "User.Read",
+    "Directory.Read.All",
+    "Application.ReadWrite.All",
+    "AppRoleAssignment.ReadWrite.All",
+  ],
+};
+
 /** Used by logout popup. */
 export const logoutRequest = {
   postLogoutRedirectUri:

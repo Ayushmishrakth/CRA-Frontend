@@ -1,6 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useMsal } from "@azure/msal-react";
-import { loginWithMicrosoftPopup, logoutMicrosoft } from "../auth/msalAuth";
+import {
+  acquireTenantDeploymentToken,
+  loginWithMicrosoftPopup,
+  logoutMicrosoft,
+} from "../auth/msalAuth";
 import { clearAllAuthCaches } from "../auth/msalCache";
 import {
   exchangeMicrosoftTokenForCraJwt,
@@ -124,6 +128,11 @@ export function AuthProvider({ children }) {
 
   const clearAuthCaches = useCallback(() => clearAllAuthCaches(instance), [instance]);
 
+  const getTenantDeploymentToken = useCallback(
+    () => acquireTenantDeploymentToken(instance),
+    [instance]
+  );
+
   const value = useMemo(
     () => ({
       user,
@@ -133,6 +142,7 @@ export function AuthProvider({ children }) {
       loginWithMicrosoft,
       logout,
       clearAuthCaches,
+      getTenantDeploymentToken,
       setError,
       refreshUser: bootstrap,
     }),
@@ -144,6 +154,7 @@ export function AuthProvider({ children }) {
       loginWithMicrosoft,
       logout,
       clearAuthCaches,
+      getTenantDeploymentToken,
       bootstrap,
     ]
   );

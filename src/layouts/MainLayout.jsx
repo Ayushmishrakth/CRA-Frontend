@@ -13,6 +13,7 @@ export default function MainLayout() {
         </div>
         <nav className="main-nav">
           <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/tenant">Tenant</NavLink>
           <NavLink to="/assessments">Assessments</NavLink>
           <NavLink to="/parameters">Parameters</NavLink>
         </nav>
